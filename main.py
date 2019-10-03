@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, flash, session, url_for
 from flask_sqlalchemy import SQLAlchemy
+from helpers import *
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -36,10 +37,44 @@ class User(db.Model):
 
 @app.route('/', methods=["GET"])
 def index():
-    return redirect("/blog")
+    return render_template ('signup.html')
 
 
 
+
+
+
+
+@app.route('/signup', methods=['POST'])
+def register():  
+    
+    username = request.form['username']
+    password = request.form['password']
+    verify = request.form['verify']
+    infoUser =[username,password,verify]
+    errors = validateUserinfo(infoUser)
+    #print (errors)
+    if (errors[0] !='') or  (errors[1] !='') or  (errors[2] !='')  :
+        return render_template('signup.html',errors=errors, infoUser=infoUser)
+    else:
+        return "thanks"
+
+        
+
+
+    # TODO - validate user's data
+
+    # existing_user = User.query.filter_by(email=email).first()
+    # if not existing_user:
+    #     new_user = User(email, password)
+    #     db.session.add(new_user)
+    #     db.session.commit()
+    #     session['email'] = email
+    #     return redirect('/')
+    # else:
+    #     flash("The email <strong>{0}</strong> is already registered".format(email), 'danger')
+
+    # return render_template('register.html')
 
 
 
