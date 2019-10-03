@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title%} 
+Blog Users
+{% endblock title%}
+
+{% block content %}
+
+<!-- Fix that we show only post for a specific user -->
+    {% for post in posts %}
+    
+    <a class="link" href="/blog?user={{user.username}}">{{user.username}}</a>
+   
+    
+    <p>        
+        {{post.content}}
+    </p>
+         <hr/>
+    {% endfor %}
+
+
+{% endblock content %}
