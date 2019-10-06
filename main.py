@@ -11,6 +11,17 @@ db = SQLAlchemy(app)
 app.secret_key = 'Lily'
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique = True, nullable=False)
+    password = db.Column(db.String(30))
+    posts = db.relationship('Post', backref='owner')
+
+    def __init__(self,username,password):
+        self.username = username
+        self.password= password
+
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
@@ -21,17 +32,6 @@ class Post(db.Model):
         self.title = title
         self.content= content
         self.owner= owner
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), unique = True, nullable=False)
-    password = db.Column(db.String(30))
-    posts = db.relationship('Post', backref='owner')
-
-    def __init__(self,username,password):
-        self.username = username
-        self.password= password
-        self.owner_id= owner_id
 
 
 
