@@ -3,29 +3,27 @@
 {% block content %}
 <h1>Signup</h1>
 
-<form action="/signup" method="POST">
-    <table>
-        <tr>
-            <td><label for="username">Username</label></td>
-            <td>
-                <input name="username" type="text" value="{{ user.username }}">
-            </td>
-        </tr>
-        <tr>
-            <td><label for="password">Password</label></td>
-            <td>
-                <input name="password" type="password">
-            </td>
-        </tr>
-        <tr>
-                <td><label for="verify">Verify Password</label></td>
-                <td>
-                    <input name="verify" type="password">
-                </td>
-            </tr>
-    </table>
-    <input type="submit" value="Signup">
-</form>
+<div id="form_area" class="signup">
+    <form name="signup" method="POST" action="/signup">
+        <fieldset>
+            <header>
+            <h1 id="title_form" class="title">Signup </h1>
+            </header>
+           
+            <label for="username">Username</label>
+                <input name="username" type="text" id="username" value="{{infoUser[0]}}"> 
+                    <span class="error">{% if errors[0] %}{{ errors[0] }}{% endif %}</span> <br><br>
+            <label for="password">Password</label>
+                <input name="password" type="password" id="password" >
+                    <span class="error">{% if errors[1] %}{{ errors[1] }}{% endif %}</span><br><br>
+            <label for="verifyPassword">Verify Password</label>
+                <input name="verifyPassword" type="password" id="verifyPassword">
+                <span class="error">{% if errors[2] %}{{ errors[2] }}{% endif %}</span><br><br>
+            <input type="submit" name="submitButton" id="submitButton" value="Submit">
+        </fieldset>
+    </form>
+    </div>
+
 
 
 {% endblock %}

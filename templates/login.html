@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+        </ul>
+{% endwith %}
 <h1>Login</h1>
 
 <form action="/login" method="post">
@@ -8,7 +17,7 @@
         <tr>
             <td><label for="username">Username</label></td>
             <td>
-                <input name="username" type="text" value="{{ user.username }}">
+                <input name="username" type="text" >
             </td>
         </tr>
         <tr>
@@ -21,5 +30,5 @@
     <input type="submit" value="Login">
 </form>
 <br>
-<p>Don't have an account? <a href="#"  class="link">Create One </a></p>
+<p>Don't have an account? <a href="/signup"  class="link">Create One </a></p>
 {% endblock %}
