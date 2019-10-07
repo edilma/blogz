@@ -36,9 +36,50 @@ class Post(db.Model):
 
 
 
-@app.route('/', methods=["GET"])
+
+
+
+
+@app.route('/', methods=['POST', 'GET'])
 def index():
-    return render_template ('user-2.html')
+    user = User.query.filter_by(username=username).all()
+    print (user)
+    return render_template('index.html',user=user)
+
+
+        
+
+
+
+@app.route('/login', methods=['GET'])
+def display():
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['username'] = username
+            flash("Logged in")
+            return redirect('/')
+        else:
+            flash('User password incorrect, or user does not exist', 'error')
+    return render_template('login.html')
+
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['username'] = username
+            flash("Logged in")
+            return redirect('/')
+        else:
+            flash('User password incorrect, or user does not exist', 'error')
+    return render_template('login.html')
+
+
+
 
 
 
