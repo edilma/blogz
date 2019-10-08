@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title%} 
+Our Bloggers
+{% endblock title%}
+
+{% block content %}
+    {% for user in users %}
+    
+    <a class="link" href="/blog?user={{user.username}}">{{user.username}}</a>
+   
+
+         <hr/>
+    {% endfor %}
+
+
+{% endblock content %}

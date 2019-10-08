@@ -27,3 +27,11 @@ span {
     padding-inline: 4em;
 }
 
+.error{
+    color: red;
+}
+
+.logins{
+    text-align: right;
+    text-decoration: blue;
+}

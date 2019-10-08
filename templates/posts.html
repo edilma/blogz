@@ -12,9 +12,14 @@ My Blog Posts
     
     <p>        
         {{post.content}}
+        <div>
+            written by: {{post.owner_id}}
+        </div>
     </p>
          <hr/>
     {% endfor %}
+
+
 
 
 {% endblock content %}

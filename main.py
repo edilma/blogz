@@ -4,6 +4,12 @@ from app import app, db
 from helpers import *
 
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'viewPosts','register','index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
 
 #route login - when a user tries to log in: allow and send to new post or errors flashed, click in signup
 @app.route('/login', methods=['POST', 'GET'])
@@ -19,7 +25,8 @@ def login():
             flash("Logged in")
             return redirect('/newpost')
         else:
-            flash('User password incorrect, or user does not exist', 'error')
+            return redirect ('/signup')
+            #flash('User password incorrect, or user does not exist', 'error')
     return render_template('login.html')
 
 
@@ -60,30 +67,15 @@ def register():
 @app.route('/logout')
 def logout():
     del session['username']
-    return redirect('/')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return redirect('/blog')
 
 
 #route index - Show list of usernames
 
-
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    return redirect("/blog")
+    users = User.query.all()
+    return render_template ('users.html', users=users)
 
 
 
@@ -100,20 +92,26 @@ def create():
 @app.route('/blog', methods=["GET"])
 def viewPosts():
     id =  request.args.get('id')
+    #owner = request.args.get('owner_id')
+    #print (owner)
+    #username = User.query.filter_by(username = owner).first()
     if id:
         posts = Post.query.filter_by(id=id).all()
     else:
         posts = Post.query.all()
 
-    return render_template('/posts.html',posts=posts)
+    return render_template('/posts.html',posts=posts ) #,username=username)
 
 
 
-@app.route('/', methods=['POST'])
+@app.route('/newpost', methods=['POST'])
 def GetContent():
+
+    #owner = User.query.filter_by(username=session['username']).first()
     title= request.form ['title']
     content = request.form ['content']
-    #error = None
+    print (title,content)
+    
     if not title:
         flash ("Title can NOT be empty")
         error="error"
@@ -125,7 +123,7 @@ def GetContent():
         
     #what to do if there is an error
     else:
-        owner = User.query (email = session['email']).first()
+        owner = User.query.filter_by(username = session['username']).first()
         new_post = Post(title,content, owner)
         db.session.add(new_post)
         db.session.commit()
