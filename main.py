@@ -26,7 +26,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         print (user)
         if user and check_password(password,user.pw_hash):
-            session['username'] = username
+            session['username'] = user.username
             flash("Logged in",  'info')
             return redirect('/newpost', username=session['username'])
         else:
@@ -97,9 +97,9 @@ def create():
 
 @app.route('/blog', methods=["GET"])
 def viewPosts():
-    
-    user= User.query.filter_by(username = session['username']).first()
     id =  request.args.get('user.id')
+    user= User.query.filter_by(username = session['username']).first()
+    
     print (user)
     #owner = request.args.get('owner_id')
     #print (owner)
