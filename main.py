@@ -6,6 +6,14 @@ from helpers import *
 from hashutils import check_password
 
 
+        
+
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'viewPosts','register','index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+    
 
 #route login - when a user tries to log in: allow and send to new post or errors flashed, click in signup
 @app.route('/login', methods=['POST', 'GET'])
@@ -16,14 +24,15 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
+        print (user)
         if user and check_password(password,user.pw_hash):
             session['username'] = username
-            flash("Logged in")
-            return redirect('/newpost')
+            flash("Logged in",  'info')
+            return redirect('/newpost', username=session['username'])
         else:
             return redirect ('/signup')
             #flash('User password incorrect, or user does not exist', 'error')
-    return render_template('login.html')
+    #return render_template('login.html')
 
 
     
@@ -60,7 +69,7 @@ def register():
 
 #Logout route - session ends. 
 
-@app.route('/logout')
+@app.route('/logout' , methods=['POST'])
 def logout():
     del session['username']
     return redirect('/blog')
@@ -80,15 +89,17 @@ def index():
 
 @app.route('/newpost', methods=["GET"])
 def create():
+    username = session['username']
     #posts = Post.query.all()
     #return render_template('posts.html', title=title, content=content)
-    return render_template('newpost.html')
+    return render_template('newpost.html', username = username)
 
 
 @app.route('/blog', methods=["GET"])
 def viewPosts():
-    id =  request.args.get('id')
+    
     user= User.query.filter_by(username = session['username']).first()
+    id =  request.args.get('user.id')
     print (user)
     #owner = request.args.get('owner_id')
     #print (owner)
@@ -138,14 +149,6 @@ def GetContent():
         
         return render_template('blog_post.html',posts=posts)
         
-        
-
-@app.before_request
-def require_login():
-    allowed_routes = ['login', 'viewPosts','register','index']
-    if request.endpoint not in allowed_routes and 'username' not in session:
-        return redirect('/login')
-    
 
 
 
