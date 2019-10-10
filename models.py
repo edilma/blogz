@@ -4,12 +4,16 @@ from app import db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique = True, nullable=False)
-    password = db.Column(db.String(30))
+    hash = db.Column(db.String(30))
     posts = db.relationship('Post', backref='owner')
 
     def __init__(self,username,password):
         self.username = username
-        self.password= password
+        self.hash = make_pw_hash(password)
+        
+
+    def __repr__(self):
+        return '<User %r>' % self.email
 
 #Class of Post.  A post is relate to only one user
 class Post(db.Model):

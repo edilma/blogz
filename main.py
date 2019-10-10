@@ -2,6 +2,7 @@ from flask import  request, redirect, render_template, flash, session, url_for
 from models import User, Post
 from app import app, db
 from helpers import *
+from hashutils import *
 
 
 @app.before_request
