@@ -1,14 +1,10 @@
 from flask import  request, redirect, render_template, flash, session, url_for
 from models import User, Post
+import cgi
 from app import app, db
 from helpers import *
+from hashutils import check_password
 
-
-@app.before_request
-def require_login():
-    allowed_routes = ['login', 'viewPosts','register','index']
-    if request.endpoint not in allowed_routes and 'username' not in session:
-        return redirect('/login')
 
 
 #route login - when a user tries to log in: allow and send to new post or errors flashed, click in signup
@@ -20,7 +16,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_password(password,user.pw_hash):
             session['username'] = username
             flash("Logged in")
             return redirect('/newpost')
@@ -50,7 +46,7 @@ def register():
         else:
             existing_user = User.query.filter_by(username=username).first()
             if not existing_user:
-                new_user = User(username, password)
+                new_user = User(username,password)
                 db.session.add(new_user)
                 db.session.commit()
                 session['username'] = username
@@ -92,17 +88,26 @@ def create():
 @app.route('/blog', methods=["GET"])
 def viewPosts():
     id =  request.args.get('id')
+    user= User.query.filter_by(username = session['username']).first()
+    print (user)
     #owner = request.args.get('owner_id')
     #print (owner)
     #username = User.query.filter_by(username = owner).first()
     if id:
-        posts = Post.query.filter_by(id=id).all()
+        posts = Post.query.filter_by(owner_id=user.id).filter_by(id=id).all()
     else:
         posts = Post.query.all()
 
-    return render_template('/posts.html',posts=posts ) #,username=username)
+    return render_template('/posts.html',posts=posts, user=user)
+
+#Define a route and function for a single post
+@app.route ('/blog/<username>', methods=["GET"])
+def singleUserPosts(username):
+    posts = User.query.filter_by(username).all()
+    return render_template("singleUser.html", posts = posts)
 
 
+#route for posting nuew blog posts
 
 @app.route('/newpost', methods=['POST'])
 def GetContent():
@@ -135,11 +140,12 @@ def GetContent():
         
         
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'viewPosts','register','index']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
     
-    
-    
-
-
 
 
 

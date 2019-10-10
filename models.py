@@ -1,15 +1,16 @@
 from app import db
+from hashutils import make_pw_hash
 
 #Class of user.  A user can have many posts
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique = True, nullable=False)
-    password = db.Column(db.String(30))
+    pw_hash = db.Column(db.String(30))
     posts = db.relationship('Post', backref='owner')
 
     def __init__(self,username,password):
         self.username = username
-        self.password= password
+        self.pw_hash= make_pw_hash(password)
 
 #Class of Post.  A post is relate to only one user
 class Post(db.Model):
