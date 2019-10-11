@@ -28,7 +28,7 @@ def login():
         if user and check_password(password,user.pw_hash):
             session['username'] = user.username
             flash("Logged in",  'info')
-            return redirect('/newpost', username=session['username'])
+            return redirect('/newpost')
         else:
             return redirect ('/signup')
             #flash('User password incorrect, or user does not exist', 'error')
@@ -97,13 +97,17 @@ def create():
 
 @app.route('/blog', methods=["GET"])
 def viewPosts():
-    id =  request.args.get('user.id')
     user= User.query.filter_by(username = session['username']).first()
-    
-    print (user)
-    #owner = request.args.get('owner_id')
-    #print (owner)
-    #username = User.query.filter_by(username = owner).first()
+
+    id =  request.args.get('id')
+    # if 'username' in session:
+    #   user= User.query.filter_by(username = session['username']).first()    
+    # else:
+    #     user = User("no-one","nothing")
+    # print (user)
+    # #owner = request.args.get('owner_id')
+    # #print (owner)
+    # #username = User.query.filter_by(username = owner).first()
     if id:
         posts = Post.query.filter_by(owner_id=user.id).filter_by(id=id).all()
     else:
@@ -114,8 +118,9 @@ def viewPosts():
 #Define a route and function for a single post
 @app.route ('/blog/<username>', methods=["GET"])
 def singleUserPosts(username):
-    posts = User.query.filter_by(username).all()
-    return render_template("singleUser.html", posts = posts)
+    posts = User.query.filter_by(username=username).all()
+    user= User.query.filter_by(username = session['username']).first()
+    return render_template('/posts.html', posts = posts,user=user)
 
 
 #route for posting nuew blog posts
@@ -145,9 +150,10 @@ def GetContent():
         db.session.commit()
         #posts = Post.query.all()
         #post_id = new_post.id 
-        posts = Post.query.filter_by(id=new_post.id).first()
-        
-        return render_template('blog_post.html',posts=posts)
+        #posts = Post.query.filter_by(id=new_post.id).first()
+        #return render_template('blog_post.html',posts=posts)
+        return redirect('/blog?id='+ str(new_post.id))
+
         
 
 

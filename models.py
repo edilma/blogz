@@ -5,12 +5,15 @@ from hashutils import make_pw_hash
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique = True, nullable=False)
-    pw_hash = db.Column(db.String(30))
+    pw_hash = db.Column(db.String(100))
     posts = db.relationship('Post', backref='owner')
 
     def __init__(self,username,password):
         self.username = username
-        self.pw_hash= make_pw_hash(password)
+        print (password)
+        pw_hash = make_pw_hash(password)
+        print (pw_hash)
+        self.pw_hash = pw_hash
 
 #Class of Post.  A post is relate to only one user
 class Post(db.Model):
