@@ -65,7 +65,7 @@ def register():
 
 #Logout route - session ends. 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     del session['username']
     return redirect('/blog')
@@ -133,12 +133,7 @@ def GetContent():
         posts = Post.query.filter_by(id=new_post.id).first()
         
         return render_template('blog_post.html',posts=posts)
-        
-        
-
-    
-    
-    
+          
 
 
 
