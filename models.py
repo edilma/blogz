@@ -10,7 +10,7 @@ class User(db.Model):
 
     def __init__(self,username,password):
         self.username = username
-        self.hash = make_pw_hash(password)
+        self.pasword_hash = make_pw_hash(password)
         
 
     def __repr__(self):

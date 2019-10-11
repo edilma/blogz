@@ -21,7 +21,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_pw_hash(password,user.pasword_hash):
             session['username'] = username
             flash("Logged in")
             return redirect('/newpost')
@@ -65,7 +65,7 @@ def register():
 
 #Logout route - session ends. 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout' , methods=['POST'])
 def logout():
     del session['username']
     return redirect('/blog')
