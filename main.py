@@ -49,12 +49,16 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        
-        if user and check_pw_hash(password,user.pw_hash):
-            session['username'] = user.username
-            flash("Logged in")
-            return redirect('/newpost')
+        if user:
+            if check_pw_hash(password,user.pw_hash):
+                session['username'] = user.username
+                flash("Logged in")
+                return redirect('/newpost')
+            else:
+                flash("Password is incorrect")
+                return render_template('login.html')   
         else:
+            flash("The user does not exist")
             return redirect ('/signup')
 
 
