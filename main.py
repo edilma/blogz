@@ -91,14 +91,23 @@ def logout():
 
 @app.route('/blog', methods=["GET"])
 def viewPosts():
+    BlogId = request.args.get('id')    
+    if BlogId:
+        posts = Post.query.filter_by(id=BlogId).all()
+        post_owner =  User.query.filter_by(id = posts[0].owner_id).first()
+        return render_template('singleUser.html',posts=posts,user=post_owner ) 
+    
     #/blog?user=4
     UserId =  request.args.get('user')
+
     if UserId:
         posts = Post.query.filter_by(owner_id = UserId).all()
-        return render_template('/singleUser.html',posts=posts )
+        post_owner =  User.query.filter_by(id = UserId).first()
+        return render_template('/singleUser.html',posts=posts, user=post_owner )
     else:
         posts = Post.query.all()
-        return render_template('/posts.html',posts=posts)
+        users =  User.query.all()
+        return render_template('/posts.html',posts=posts, users=users)
 
 
 #route index - Show list of usernames

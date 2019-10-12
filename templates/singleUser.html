@@ -14,8 +14,11 @@ Blog Users
 
 <p>        
     {{post.content}}
+
     <div>
-        written by: {{user.username}}
+        
+        written by:<a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a>
+        
     </div>
 </p>
      <hr/>

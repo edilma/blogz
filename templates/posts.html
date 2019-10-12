@@ -13,7 +13,11 @@ My Blog Posts
     <p>        
         {{post.content}}
         <div>
-            written by: {{post.owner_id}}
+            {% for user in users %}
+                {% if user.id == post.owner_id %}
+            written by:<a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a>
+                {% endif %}
+            {% endfor %}
         </div>
     </p>
          <hr/>
