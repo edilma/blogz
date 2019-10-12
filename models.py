@@ -5,16 +5,16 @@ from hashutils import *
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique = True, nullable=False)
-    hash = db.Column(db.String(250))
+    pw_hash = db.Column(db.String(250))
     posts = db.relationship('Post', backref='owner')
 
     def __init__(self,username,password):
         self.username = username
-        self.pasword_hash = make_pw_hash(password)
+        self.pw_hash = make_pw_hash(password)
         
 
     def __repr__(self):
-        return '<User %r>' % self.email
+        return '<User %r>' % self.username
 
 #Class of Post.  A post is relate to only one user
 class Post(db.Model):

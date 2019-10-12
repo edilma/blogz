@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+{% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+{% endwith %}
 
 <div id="form_area" class="signup">
     <form name="signup" method="POST" action="/signup">

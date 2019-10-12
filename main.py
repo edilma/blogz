@@ -21,17 +21,15 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and check_pw_hash(password,user.pasword_hash):
-            session['username'] = username
+        
+        if user and check_pw_hash(password,user.pw_hash):
+            session['username'] = user.username
             flash("Logged in")
-            return redirect('/newpost')
+            return redirect('/newpost', session['username'])
         else:
             return redirect ('/signup')
-            #flash('User password incorrect, or user does not exist', 'error')
-    return render_template('login.html')
-
-
-    
+            
+        
 
         
 #Route signgup.  Request the user information and verify it using the verify
@@ -55,7 +53,7 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
                 session['username'] = username
-                return redirect('/login')
+                return redirect('/newpost', username=username)
             else:
                 flash( 'User already exist.  Please log in')
                 return redirect('/login')
@@ -68,6 +66,7 @@ def register():
 @app.route('/logout' , methods=['POST'])
 def logout():
     del session['username']
+    print (username)
     return redirect('/blog')
 
 
@@ -81,59 +80,65 @@ def index():
 
 
 
-
-
-@app.route('/newpost', methods=["GET"])
-def create():
-    #posts = Post.query.all()
-    #return render_template('posts.html', title=title, content=content)
-    return render_template('newpost.html')
+    
 
 
 @app.route('/blog', methods=["GET"])
 def viewPosts():
-    id =  request.args.get('id')
-    #owner = request.args.get('owner_id')
-    #print (owner)
-    #username = User.query.filter_by(username = owner).first()
-    if id:
-        posts = Post.query.filter_by(id=id).all()
-    else:
-        posts = Post.query.all()
-
+    # if session['username']:
+    #     id =  request.args.get('id')
+    #     posts = Post.query.filter_by(id=id).all()
+    #     return render_template('/blog.html', posts=posts)
+    # else:
+    posts = Post.query.all()
     return render_template('/posts.html',posts=posts ) #,username=username)
 
 
 
+
+
+@app.route('/newpost', methods=["GET"])
+def create():
+    owner = User.query.filter_by(username =session['username']).first()
+    if owner in session:
+        return render_template('newpost.html', username = username)
+    else:
+        return redirect('/login')
+
+    # posts = Post.query.all()
+    # return render_template('posts.html', title=title, content=content)
+
+
 @app.route('/newpost', methods=['POST'])
 def GetContent():
-
-    #owner = User.query.filter_by(username=session['username']).first()
-    title= request.form ['title']
-    content = request.form ['content']
-    print (title,content)
+#     if request.method =='GET':
+#         username = session['username']
+#         return render_template('newpost.html', username=username)
     
+    if username in session:
+    #owner = User.query.filter_by(username=session['username']).first()
+        title= request.form ['title']
+        content = request.form ['content']
+
     if not title:
         flash ("Title can NOT be empty")
         error="error"
-        return render_template('write.html', content=content)
+        return render_template('newpost.html', content=content)
     if not content:
         flash ("Content can NOT be empty")
-    #   error='error'
-        return render_template('write.html',title=title)
-        
-    #what to do if there is an error
+        return render_template('newpost.html',title=title)
+    #everything is ok, content, title and in session
     else:
-        owner = User.query.filter_by(username = session['username']).first()
-        new_post = Post(title,content, owner)
+        #owner = User.query.filter_by(username = session['username']).first()
+        new_post = Post(title,content, owner = user.id)
         db.session.add(new_post)
         db.session.commit()
         #posts = Post.query.all()
         #post_id = new_post.id 
         posts = Post.query.filter_by(id=new_post.id).first()
-        
+    
         return render_template('blog_post.html',posts=posts)
-          
+    
 
 
 
