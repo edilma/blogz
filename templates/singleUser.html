@@ -6,17 +6,19 @@ Blog Users
 
 {% block content %}
 
-<!-- Fix that we show only post for a specific user -->
-    {% for post in posts %}
-    
-    <a class="link" href="/blog?user={{user.username}}">{{user.username}}</a>
-   
-    
-    <p>        
-        {{post.content}}
-    </p>
-         <hr/>
-    {% endfor %}
 
+{% for post in posts %}
+    
+<a class="link" href="/blog?id={{post.id}}">{{post.title}}</a>
+
+
+<p>        
+    {{post.content}}
+    <div>
+        written by: {{user.username}}
+    </div>
+</p>
+     <hr/>
+{% endfor %}
 
 {% endblock content %}

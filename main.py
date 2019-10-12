@@ -33,7 +33,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/newpost', session['username'])
+            return redirect('/newpost')
         else:
             flash("The username {0} is already registered".format(username), 'danger')
     return redirect('/login')
@@ -53,7 +53,7 @@ def login():
         if user and check_pw_hash(password,user.pw_hash):
             session['username'] = user.username
             flash("Logged in")
-            return redirect('/newpost',session['username'])
+            return redirect('/newpost')
         else:
             return redirect ('/signup')
 
@@ -67,24 +67,38 @@ def create():
         blog_content = request.form['content']
         isValid = validatePost (blog_name,blog_content)
         if isValid=="ok":
-            new_post = Post(blog_name,blog_content,owner=user.id)
+            new_post = Post(blog_name,blog_content,owner)
             db.session.add(new_post)
-            db.session.commit() 
+            db.session.commit()
+            posts = Post.query.filter_by(id=new_post.id).first()
+            return render_template('blog_post.html',posts=posts)  
         else: 
             flash(isValid) 
-        posts = Post.query.filter_by(id=new_post.id).first()
-    return render_template('blog_post.html',posts=posts) 
-
-
+            return render_template('newpost.html')
+    if request.method == 'GET':
+        return render_template('newpost.html')
 
             
 #Logout route - session ends. 
 
-@app.route('/logout' , methods=['POST'])
+@app.route('/logout' , methods=['GET'])
 def logout():
     del session['username']
-    print (username)
+    print ("logout")
     return redirect('/blog')
+
+'''Route that display the post by user or all'''
+
+@app.route('/blog', methods=["GET"])
+def viewPosts():
+    #/blog?user=4
+    UserId =  request.args.get('user')
+    if UserId:
+        posts = Post.query.filter_by(owner_id = UserId).all()
+        return render_template('/singleUser.html',posts=posts )
+    else:
+        posts = Post.query.all()
+        return render_template('/posts.html',posts=posts)
 
 
 #route index - Show list of usernames
@@ -95,10 +109,7 @@ def index():
     return render_template ('users.html', users=users)
 
 
-@app.route('/blog', methods=["GET"])
-def viewPosts():
-    posts = Post.query.all()
-    return render_template('/posts.html',posts=posts )
+
 
 
     
