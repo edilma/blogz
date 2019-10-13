@@ -5,9 +5,10 @@ My Blog Posts
 {% endblock title%}
 
 {% block content %}
+    <div class="col-sm-9">
     {% for post in posts %}
     
-    <a class="link" href="/blog?id={{post.id}}">{{post.title}}</a>
+    <h2><a class="link" href="/blog?id={{post.id}}">{{post.title}}</a></h2>
    
     
     <p>        
@@ -15,13 +16,17 @@ My Blog Posts
         <div>
             {% for user in users %}
                 {% if user.id == post.owner_id %}
-            written by:<a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a>
+           <h5>written by:<span class="glyphicon glyphicon-pencil"></span><a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a> </h5>
+           <h5><span class="label label-success">Important</span></h5>
+           <hr/>
                 {% endif %}
+            
             {% endfor %}
         </div>
     </p>
-         <hr/>
+         
     {% endfor %}
+    </div>
 
 
 

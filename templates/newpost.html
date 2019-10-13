@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 
 {% block title%} 
-My Blog
+Writing My Blog
 {% endblock title%}
 
 
 {% block content %}
+<div class="col-sm-9">
 <h1>Add a Blog Entry</h1>
 
     <form name="blogPost" action="/newpost" method ="POST">
         <div class="title">
         <!--Title Goes Here-->
-            <label for="title" >Title: </label><br>
+           <h2><label for="title" >Title: </label></h2> <br>
             <input id="title" name="title" type="text"  />
         </div>
         <br>
         <br>
          <!--Content Goes Here-->
         <div>            
-            <label for="content" >Your New Blog: </label><br>
+            <h2><label for="content" >Your New Blog: </label></h2><br>
             <textarea id="content"   name="content" placeholder="Write your blog content here" ></textarea>
             <br>
             <input type="submit" value="Add New Post">
         </div>
 </form>
 
-
+</div>
 {% endblock content %}

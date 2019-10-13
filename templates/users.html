@@ -5,13 +5,15 @@ Our Bloggers
 {% endblock title%}
 
 {% block content %}
+<div class="col-sm-9">
+    <h1>Blog Users!</h1>
     {% for user in users %}
     
-    <a class="link" href="/blog?user={{user.id}}">{{user.username}}</a>
+    <h2><a class="link" href="/blog?user={{user.id}}">{{user.username}}</a></h2>
    
 
          <hr/>
     {% endfor %}
 
-
+</div>
 {% endblock content %}

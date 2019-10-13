@@ -5,11 +5,12 @@ Blog Users
 {% endblock title%}
 
 {% block content %}
+<div class="col-sm-9">
 
 
 {% for post in posts %}
     
-<a class="link" href="/blog?id={{post.id}}">{{post.title}}</a>
+<h1><a class="link" href="/blog?id={{post.id}}">{{post.title}}</a></h1>
 
 
 <p>        
@@ -17,11 +18,12 @@ Blog Users
 
     <div>
         
-        written by:<a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a>
+        <h5>written by:<span class="glyphicon glyphicon-pencil"></span><a class="link" href="/blog?user={{user.id}}"> {{user.username}}</a></h5>
         
     </div>
 </p>
      <hr/>
 {% endfor %}
+</div>
 
 {% endblock content %}
