@@ -9,6 +9,7 @@ from hashutils import *
 def require_login():
     allowed_routes = ['login', 'viewPosts','register','index']
     if request.endpoint not in allowed_routes and 'username' not in session:
+        flash("You must be logged in to access that page")
         return redirect('/login')
 
         
@@ -52,7 +53,7 @@ def login():
         if user:
             if check_pw_hash(password,user.pw_hash):
                 session['username'] = user.username
-                flash("Logged in")
+                #flash("Logged in")
                 return redirect('/newpost')
             else:
                 flash("Password is incorrect")
@@ -88,6 +89,7 @@ def create():
 @app.route('/logout' , methods=['GET'])
 def logout():
     del session['username']
+    #flash("Logged Out")
     print ("logout")
     return redirect('/blog')
 
